@@ -1,31 +1,154 @@
 <!DOCTYPE html>
 <html>
+
+
   <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="master.css">
-    <title>week03</title>
+    <title>BALL=LIFE VR</title>
+    <meta name="description" content="A WebVR Game">
+    <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
+
+    <script>
+
+    AFRAME.registerComponent('cursor-listener-start', {
+  init: function start() {
+    var sceneEl = document.querySelector('a-scene');
+    var instructions = sceneEl.querySelector('#instructions')
+    var title = sceneEl.querySelector('#title')
+    var pickup = sceneEl.querySelector('#pickup')
+    var score = sceneEl.querySelector('#score')
+    var time = sceneEl.querySelector('#time')
+    this.el.addEventListener('click', function (evt) {
+    instructions.setAttribute('text', 'value', '');
+    title.setAttribute('text', 'value', '');
+    pickup.setAttribute('text', 'value', '');
+    score.setAttribute('text', 'value', '0');
+    time.setAttribute('text', 'value', '30');
+
+    });
+  }
+});
+
+    AFRAME.registerComponent('cursor-listener-win', {
+    init: function win() {
+    var sceneEl = document.querySelector('a-scene');
+    var instructions = sceneEl.querySelector('#instructions');
+    var title = sceneEl.querySelector('#title');
+    var pickup = sceneEl.querySelector('#pickup');
+    var time = sceneEl.querySelector('#time');
+    var winBtn = sceneEl.querySelector('#winBtn');
+  //   this.el.addEventListener('mouseenter', function () {
+  //   winBtn.setAttribute('scale', "1.2 1.2 1.2");
+  // });
+    this.el.addEventListener('click', function (evt) {
+    instructions.setAttribute('text', 'value', "LOOK AT AND CLICK ON BALL TO PICK UP. CLICK AGAIN TO SHOOT.\n\nSCORE 5 BEFORE TIME RUNS OUT.");
+    title.setAttribute('text', 'value', "YOU WON!");
+    pickup.setAttribute('text', 'value', "PICK UP BALL TO START");
+    score.setAttribute('text', 'value', '5');
+    time.setAttribute('text', 'value', '00');
+
+
+    });
+  }
+});
+
+AFRAME.registerComponent('cursor-listener-lose', {
+init: function lose() {
+var sceneEl = document.querySelector('a-scene');
+var instructions = sceneEl.querySelector('#instructions');
+var title = sceneEl.querySelector('#title');
+var pickup = sceneEl.querySelector('#pickup');
+var time = sceneEl.querySelector('#time');
+this.el.addEventListener('click', function (evt) {
+instructions.setAttribute('text', 'value', "LOOK AT AND CLICK ON BALL TO PICK UP. CLICK AGAIN TO SHOOT.\n\nSCORE 5 BEFORE TIME RUNS OUT.");
+title.setAttribute('text', 'value', "YOU LOST");
+pickup.setAttribute('text', 'value', "PICK UP BALL TO START");
+score.setAttribute('text', 'value', '2');
+time.setAttribute('text', 'value', '00');
+
+});
+}
+});
+    </script>
+
+    <script>
+
+    AFRAME.registerComponent('log', {
+  schema: {type: 'string'},
+  init: function () {
+    var stringToLog = this.data;
+
+    console.log(stringToLog);
+  }
+});
+
+    </script>
   </head>
   <body>
 
-    <p>
-      BALL=LIFE
-    </p>
 
-    <div class="btn">
-      <a href="start.html">START</a>
-    </div>
+    <a-scene>
 
-    <div class="btn">
-      <a href="game.html">GAME</a>
-    </div>
+      <a-camera position=".35 0 1">
+        <a-entity position="0 0 -1" scale=".5 .5 .5"
+                geometry="primitive: ring; radiusOuter: 0.07;
+                          radiusInner: 0.04;"
+                material="color: white; shader: flat"
+                cursor="maxDistance: 30; fuse: false">
+        <a-animation begin="click" easing="ease-in" attribute="scale"
+             fill="backwards" from="0.1 0.1 0.1" to=".5 .5 .5" dur="200"></a-animation>
+      </a-entity>
+      </a-camera>
 
-    <div class="btn">
-      <a href="win.html">WIN</a>
-    </div>
 
-    <div class="btn">
-      <a href="lose.html">LOSE</a>
-    </div>
+<!-- SET UP ENVIRO -->
+      <a-entity gltf-model="url(https://cdn.glitch.com/e926d048-d6de-410f-a9f6-76e94f0c9ae3%2Fmodel.gltf?1499956406414)" scale="10 10 10" position="1 3 -5.5"></a-entity>
+      <a-entity id="title" text="align: center; value: BALL=LIFE; color: #ff0000" width="1" position="0.253 5.85 -7.926" scale="14.335 14.335 14.335"></a-entity>
+      <a-entity id="time" text="align: center; value: 25; color: #ffffff" width="1" position="0.3 7.27 -7.926" scale="14.335 14.335 14.335"></a-entity>
+      <a-entity id="pickup" text="align:center;color:#ffffff;value:PICK UP BALL TO START;wrapCount:12" position="0.253 -1.152 -5.338" scale="7.447 7.447 7.447" rotation="-90 0 0"></a-entity>
+      <a-entity id="instructions" text="color:#ffffff;value:LOOK AT AND CLICK ON BALL TO PICK UP. CLICK AGAIN TO SHOOT.\n\nSCORE 5 BEFORE TIME RUNS OUT.;wrapCount:22" position="-5.632 1.964 -6.16" scale="5.805 5.805 5.805" rotation="0 90 0"></a-entity>
+      <a-entity id="score" text="width:3.9899999999999993;height:3.88;color:#ffffff;value:0;align:center" position="8.73 1.971 -6.531" scale="37.153 37.153 37.153" rotation="0 -90 0"></a-entity>
+      <a-sphere cursor-listener-start id="ball" material="color: orange;" radius=".3" position="2.062 0.185 -1.675" geometry="radius:0.35"></a-sphere>
+      <a-sky color="#3F80DC"></a-sky>
+<!-- CLOSE UP ENVIRO -->
+
+      <a-entity id="winBtn" cursor-listener-win="" position="-2.144 0.474 -9.819" scale="1 1 1">
+        <a-animation attribute="scale"
+              begin="mouseenter"
+               dur="100"
+               fill="forwards"
+               to="1.2 1.2 1.2"
+               repeat="0"></a-animation>
+              <a-animation attribute="scale"
+                     begin="mouseleave"
+                      dur="100"
+                      fill="forwards"
+                      to="1 1 1"
+                      repeat="0"></a-animation>
+        <a-box scale="2.787 1 0.254" material="color:skyblue"></a-box>
+        <a-text value="WIN" color="tomato" align="center" position="0 0 0.15" scale="2.603 2.603 2.603"></a-text>
+      </a-entity>
+
+      <a-entity id="loseBtn" cursor-listener-lose="" position="2.75 0.474 -9.819">
+        <a-animation attribute="scale"
+              begin="mouseenter"
+               dur="100"
+               fill="forwards"
+               to="1.2 1.2 1.2"
+               repeat="0"></a-animation>
+              <a-animation attribute="scale"
+                     begin="mouseleave"
+                      dur="100"
+                      fill="forwards"
+                      to="1 1 1"
+                      repeat="0"></a-animation>
+        <a-box scale="2.787 1 0.254" material="color:skyblue"></a-box>
+        <a-text value="LOSE" color="tomato" align="center" position="0 0 0.15" scale="2.603 2.603 2.603"></a-text>
+      </a-entity>
+
+
+
+
+    </a-scene>
 
   </body>
 </html>
